@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\Game">
+      <UniqueIdentifier>{dfc073b0-2d15-4c63-90b9-18305a8dbe32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Shader">
+      <UniqueIdentifier>{44f51f2d-e36f-4b5b-b622-9b9d7ba36657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\System">
+      <UniqueIdentifier>{8efbc9ad-4c5f-4324-82ad-5dae5db7cdf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{0035733b-16af-42e7-93e3-403c0d50e4f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\imgui">
+      <UniqueIdentifier>{3e4814bf-6efb-4e15-811d-49ec1ab2f1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Shader\ModelShader">
+      <UniqueIdentifier>{f426346d-dab9-4b28-bb83-5400716a5050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\System\ComponentSystem">
+      <UniqueIdentifier>{39a90c11-a25f-4def-9548-06e40cca6ccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary">
+      <UniqueIdentifier>{f23dd743-f8d8-4403-a4c1-2e27e3ec15e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary\Graphics">
+      <UniqueIdentifier>{902ecc37-b3b6-4f8b-9563-1921c50f1e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary\Math">
+      <UniqueIdentifier>{deaedcfa-85bb-4da7-9fc9-5ea109fdc66f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary\Model">
+      <UniqueIdentifier>{818a0182-a318-48d1-945e-cb4d00c87d81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary\Shader">
+      <UniqueIdentifier>{d95672ca-df95-4d98-9a32-7126f67453c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\RgLibrary\Utility">
+      <UniqueIdentifier>{60d7a17b-860d-427b-8c6d-2c75ec6e2c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\imgui\examples">
+      <UniqueIdentifier>{9bde6cf4-3913-4be8-b035-b9097a249a2b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\GameWindow.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\GraphicsPipeline.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ShaderManager.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\ModelShader\ModelShader.cpp">
+      <Filter>src\Shader\ModelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\GameManager.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\DrawThreadManager.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\EditorCamera.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\EditorStage.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\Level.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\ImGuiHelper.cpp">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\ComponentSystem\ModelComponent.cpp">
+      <Filter>src\System\ComponentSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\ComponentSystem\BaseComponent.cpp">
+      <Filter>src\System\ComponentSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgConstantBuffer.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgD3D.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgDescriptor.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgPrimitive.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgTexture.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgBuffer.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Graphics\RgCommandList.cpp">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Math\RgMath.cpp">
+      <Filter>Library\RgLibrary\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Model\RgModel.cpp">
+      <Filter>Library\RgLibrary\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Shader\RgPrimitiveShader.cpp">
+      <Filter>Library\RgLibrary\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\Utility\RgResourceFactory.cpp">
+      <Filter>Library\RgLibrary\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\imgui_demo.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\imgui_draw.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\imgui_widgets.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\imgui.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\examples\imgui_impl_win32.cpp">
+      <Filter>Library\imgui\examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\examples\imgui_impl_dx12.cpp">
+      <Filter>Library\imgui\examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\ImGradient.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\ImGuizmo.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\ImSequencer.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\imgui-docking\ImCurveEdit.cpp">
+      <Filter>Library\imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\GameWindow.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ShaderManager.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\GraphicsPipeline.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ModelShader\ModelShader.h">
+      <Filter>src\Shader\ModelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\EditorStage.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\GameManager.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\DrawThreadManager.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\EditorCamera.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\Level.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\ImGuiHelper.h">
+      <Filter>src\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\ComponentSystem\BaseComponent.h">
+      <Filter>src\System\ComponentSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\ComponentSystem\ModelComponent.h">
+      <Filter>src\System\ComponentSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgCommandList.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgConstantBuffer.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgD3D.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgDescriptor.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgPrimitive.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgTexture.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Graphics\RgBuffer.h">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Math\RgMath.h">
+      <Filter>Library\RgLibrary\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Model\RgModel.h">
+      <Filter>Library\RgLibrary\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Model\RgStreamReader.h">
+      <Filter>Library\RgLibrary\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Shader\RgPrimitiveShader.h">
+      <Filter>Library\RgLibrary\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Utility\RgResourceFactory.h">
+      <Filter>Library\RgLibrary\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\Utility\RgHelper.h">
+      <Filter>Library\RgLibrary\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\RgLibrary.h">
+      <Filter>Library\RgLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imgui_internal.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imstb_rectpack.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imstb_textedit.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imstb_truetype.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imconfig.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\imgui.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\examples\imgui_impl_dx12.h">
+      <Filter>Library\imgui\examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\examples\imgui_impl_win32.h">
+      <Filter>Library\imgui\examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\ImCurveEdit.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\ImGradient.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\ImGuizmo.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\imgui-docking\ImSequencer.h">
+      <Filter>Library\imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shader\ModelShader\ModelShader.hlsli">
+      <Filter>src\Shader\ModelShader</Filter>
+    </None>
+    <None Include="..\Library\RgLibrary\Graphics\RgBuffer.inl">
+      <Filter>Library\RgLibrary\Graphics</Filter>
+    </None>
+    <None Include="..\Library\RgLibrary\Shader\inc_RgPrimitive.hlsli">
+      <Filter>Library\RgLibrary\Shader</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Shader\ModelShader\ModelShader_PS.hlsl">
+      <Filter>src\Shader\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\Shader\ModelShader\ModelShader_VS.hlsl">
+      <Filter>src\Shader\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Library\RgLibrary\Shader\RgPrimitive_PS.hlsl">
+      <Filter>Library\RgLibrary\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Library\RgLibrary\Shader\RgPrimitive_VS.hlsl">
+      <Filter>Library\RgLibrary\Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
