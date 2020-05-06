@@ -51,6 +51,18 @@ inline std::wstring RgConvertStringToWstring(const std::string& str)
 	return wStr;
 }
 
+// std::stringからchar*に変換
+inline void RgConvertStringToChar(const std::string& str, char* out, DWORD size)
+{
+	UINT i = 0;
+	for (; i < str.size(); i++)
+	{
+		if (i >= size - 1)break;
+		out[i] = str[i];
+	}
+	out[i] = '\0';
+}
+
 //==========================================================
 //
 // キー関係
@@ -181,4 +193,27 @@ inline std::vector<std::filesystem::path> RgEnumFiles(const std::string& baseDir
 	);
 
 	return items;
+}
+
+
+// ファイルダイアログを表示
+inline std::string GetFileName_Dialog(const char* extFilter, std::string selectFile_def = "")
+{
+	OPENFILENAME    ofn;
+	std::string     filename;
+	char			workStr[256];
+
+	filename = selectFile_def;  //忘れるとデフォルトファイル名に変な文字列が表示される
+	RgConvertStringToChar(filename, workStr, sizeof(workStr));
+	memset(&ofn, 0, sizeof(OPENFILENAME));  //構造体を0でクリア
+	ofn.lStructSize		= sizeof(OPENFILENAME);
+	ofn.lpstrFilter		= extFilter;
+	ofn.lpstrFile		= workStr;
+	ofn.nMaxFile		= sizeof(workStr);
+	ofn.Flags			= OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.lpstrDefExt		= "glb";
+
+	GetOpenFileName(&ofn);
+	filename = workStr;
+	return filename;
 }

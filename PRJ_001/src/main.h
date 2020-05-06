@@ -33,6 +33,10 @@
 #define WIN_H 780
 #define DH_SRV_NUM 1
 
+//
+#define FD_FILTER_IMAGE "Image file\0*.png;*.jpg\0\0"
+#define FD_FILTER_MODEL "Model file\0*.glb\0\0"
+
 
 
 class Applicatoin

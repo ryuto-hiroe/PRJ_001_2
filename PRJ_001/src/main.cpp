@@ -3,7 +3,6 @@
 #include "main.h"
 
 
-
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	// メモリリークを知らせる
@@ -121,6 +120,8 @@ bool Applicatoin::Init(HINSTANCE hInst, int w, int h)
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
+
+	//ImGui::DockSpace();
 	//ImGui::StyleColorsClassic();
 
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
@@ -161,6 +162,10 @@ void Applicatoin::Loop()
 
 	// ゲームマネージャの初期化
 	GAMEMGR.Init();
+
+	auto file = GetFileName_Dialog(
+		FD_FILTER_IMAGE,
+		"D:\\myProgram\\projects\\PRJ_001_2\\PRJ_001\\data\\Models\\chara");
 
 	// ゲームループ
 	while (1)
