@@ -47,6 +47,9 @@
     <Filter Include="Library\imgui\examples">
       <UniqueIdentifier>{9bde6cf4-3913-4be8-b035-b9097a249a2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\RgLibrary\GUI">
+      <UniqueIdentifier>{f36d281b-0ef1-4e42-9d44-290d1842495d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -150,6 +153,12 @@
     </ClCompile>
     <ClCompile Include="..\Library\imgui-docking\ImCurveEdit.cpp">
       <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\GUI\RgGuiWindow_Impl.cpp">
+      <Filter>Library\RgLibrary\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\RgLibrary\GUI\RgGui.cpp">
+      <Filter>Library\RgLibrary\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -269,6 +278,12 @@
     </ClInclude>
     <ClInclude Include="..\Library\imgui-docking\ImSequencer.h">
       <Filter>Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\GUI\RgGuiWindow_Impl.h">
+      <Filter>Library\RgLibrary\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\RgLibrary\GUI\RgGui.h">
+      <Filter>Library\RgLibrary\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

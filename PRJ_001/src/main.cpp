@@ -104,51 +104,9 @@ bool Applicatoin::Init(HINSTANCE hInst, int w, int h)
 	//===================================================================
 	// ImGui初期化
 	//===================================================================
-	// ImGui用DescriptorHeap Handleを取得
-	RgCpuAndGpuHandle handle = RGHEAPMGR.GetHeapHandle();
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	(void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-	//io.ConfigViewportsNoAutoMerge = true;
-	//io.ConfigViewportsNoTaskBarIcon = true;
-
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-
-	//ImGui::DockSpace();
-	//ImGui::StyleColorsClassic();
-
-	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	if (m_Gui.Init(m_Window.GetHWnd()) == false)
 	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
-	
-	// Setup Platform/Renderer bindings 
-	if (ImGui_ImplWin32_Init(m_Window.GetHWnd()) == false) {
-		MessageBox(nullptr, "ImGui初期化失敗", "エラー", MB_OK);
-		return false;
-	}
-	auto ptr = RGHEAPMGR.GetDescriptorHeap();
-
-	if (ImGui_ImplDX12_Init(
-		RGD3D.GetDevice().Get(),
-		RGD3D.FrameBufferCount,
-		DXGI_FORMAT_R8G8B8A8_UNORM,
-		ptr.Get(),
-		handle.cpuhandle,
-		handle.gpuhandle
-	) == false)
-	{
-		MessageBox(nullptr, "ImGui初期化失敗", "エラー", MB_OK);
+		MessageBox(nullptr, "GUI初期化失敗", "エラー", MB_OK);
 		return false;
 	}
 
@@ -226,9 +184,7 @@ void Applicatoin::Release()
 	GAMEMGR.Release();
 
 	// ImGui
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	m_Gui.Release();
 
 	// Direct3Dの解放
 	RGD3D.Release();
