@@ -123,7 +123,7 @@ void GraphicsPipeline::Draw()
 	// モデル描画コマンドリストを登録
 	comLists.push_back(m_ModelDrawCommandList[0].GetCommandList().Get());
 	// デバッグ描画コマンドリストを登録
-	//comLists.push_back(m_debugCommandList.GetCommandList().Get());
+	comLists.push_back(m_debugCommandList.GetCommandList().Get());
 	// GUI描画コマンドリストを登録
 	comLists.push_back(m_guiCommandList.GetCommandList().Get());
 	// コマンドの実行

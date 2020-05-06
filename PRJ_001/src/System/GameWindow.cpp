@@ -4,7 +4,6 @@
 // imgui
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-
 bool GameWindow::Create(HINSTANCE hInst, int clientWidth, int clientHeight, const std::string& windowClassName)
 {
 	//===================================================================
