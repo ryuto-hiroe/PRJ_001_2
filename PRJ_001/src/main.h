@@ -5,14 +5,6 @@
 //===============================================
 // Rg Library
 #include "RgLibrary.h"
-//
-// ImGui
-#include <imgui.h>
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx12.h"
-
-#include "ImGuizmo.h"
-
 
 //===============================================
 // その他
@@ -61,6 +53,8 @@ public:
 	// ゲームウィンドウクラス
 	GameWindow	m_Window;
 
+	// Gui
+	RgGui		m_Gui;
 
 	//=====================================================
 	// グローバルデータ

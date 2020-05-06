@@ -36,6 +36,8 @@
     <ClCompile Include="..\Library\RgLibrary\Graphics\RgDescriptor.cpp" />
     <ClCompile Include="..\Library\RgLibrary\Graphics\RgPrimitive.cpp" />
     <ClCompile Include="..\Library\RgLibrary\Graphics\RgTexture.cpp" />
+    <ClCompile Include="..\Library\RgLibrary\GUI\RgGui.cpp" />
+    <ClCompile Include="..\Library\RgLibrary\GUI\RgGuiWindow_Impl.cpp" />
     <ClCompile Include="..\Library\RgLibrary\Math\RgMath.cpp" />
     <ClCompile Include="..\Library\RgLibrary\Model\RgModel.cpp" />
     <ClCompile Include="..\Library\RgLibrary\Shader\RgPrimitiveShader.cpp" />
@@ -74,6 +76,8 @@
     <ClInclude Include="..\Library\RgLibrary\Graphics\RgDescriptor.h" />
     <ClInclude Include="..\Library\RgLibrary\Graphics\RgPrimitive.h" />
     <ClInclude Include="..\Library\RgLibrary\Graphics\RgTexture.h" />
+    <ClInclude Include="..\Library\RgLibrary\GUI\RgGui.h" />
+    <ClInclude Include="..\Library\RgLibrary\GUI\RgGuiWindow_Impl.h" />
     <ClInclude Include="..\Library\RgLibrary\Math\RgMath.h" />
     <ClInclude Include="..\Library\RgLibrary\Model\RgModel.h" />
     <ClInclude Include="..\Library\RgLibrary\Model\RgStreamReader.h" />
