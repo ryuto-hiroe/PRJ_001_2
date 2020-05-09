@@ -121,7 +121,7 @@ void Applicatoin::Loop()
 	// ゲームマネージャの初期化
 	GAMEMGR.Init();
 
-	auto file = GetFileName_Dialog(
+	auto file = FileDialog(
 		FD_FILTER_IMAGE,
 		"D:\\myProgram\\projects\\PRJ_001_2\\PRJ_001\\data\\Models\\chara");
 

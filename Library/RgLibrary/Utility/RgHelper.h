@@ -197,7 +197,7 @@ inline std::vector<std::filesystem::path> RgEnumFiles(const std::string& baseDir
 
 
 // ファイルダイアログを表示
-inline std::string GetFileName_Dialog(const char* extFilter, std::string selectFile_def = "")
+inline std::string FileDialog(const char* extFilter, std::string selectFile_def = "")
 {
 	OPENFILENAME    ofn;
 	std::string     filename;

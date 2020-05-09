@@ -48,7 +48,6 @@ private:
 	//===================
 	// 描画関数をためておく配列
 	std::vector<std::function<void(RgCommandList&)>> m_modelDrawCalls;
-
 	// コマンドリスト
 	// モデル描画用
 	std::vector<RgCommandList> m_ModelDrawCommandList;
@@ -76,6 +75,11 @@ private:
 	bool m_UseMultiThreadFlag = true;
 	// スレッド数
 	UINT m_threadNum = 1;
+
+	//===================
+	// Render Targets
+	//===================
+	RgRenderTargets m_rts;
 
 	//===================
 	// カメラ関係

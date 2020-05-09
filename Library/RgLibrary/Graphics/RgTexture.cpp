@@ -84,8 +84,11 @@ bool RgTexture2D::CreateTexAndSRV(const int w, const int h, DXGI_FORMAT format)
 		1, 1, 1, 0, // ArraySize, MipLevel, SampleCount, SampleQuality
 		D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
+	m_format = format;
+
+	// テクスチャリソース作成
 	D3D12_CLEAR_VALUE clearValue = {};
-	clearValue.Format = format;
+	clearValue.Format = m_format;
 	RGD3D.GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
@@ -96,8 +99,16 @@ bool RgTexture2D::CreateTexAndSRV(const int w, const int h, DXGI_FORMAT format)
 	);
 
 	// SRVの作成
+	CreateSRV();
+
+	return true;
+}
+
+bool RgTexture2D::CreateSRV()
+{
+	// SRVの作成
 	m_srvDesc.Texture2D.MipLevels = 1;
-	m_srvDesc.Format = format;
+	m_srvDesc.Format = m_format;
 	m_srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	m_srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	m_srv = RGHEAPMGR.CreateSRV(m_texture2D, &m_srvDesc);
@@ -207,43 +218,7 @@ void RgTexture2D::CreateCommandSetSRV(const ComPtr<ID3D12GraphicsCommandList>& c
 
 
 
-bool RgRenderTargets::CreateRT(
-	const int w,
-	const int h,
-	std::vector<DXGI_FORMAT> format)
-{
-	if (format.size() == 0) {
-		Release();
-		return false;
-	}
-	// マルチレンダーターゲットの枚数
-	m_multiRTCount = format.size();
-	// RTV用ディスクリプタヒープ作成
-	CreateDescriptorHeap();
 
-	//==========================
-	// テクスチャ作成
-	//==========================
-	for (int i = 0; i < m_multiRTCount; i++)
-	{
-		auto rt = std::make_shared<RgTexture2D>();
-		rt->CreateTexAndSRV(w, h, format[i]);
-		m_rt.push_back(rt);
-	}
-	//==========================
-	// テクスチャにRTVを作成する
-	//==========================
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(
-		m_heapRtv->GetCPUDescriptorHandleForHeapStart());
-	for (int i = 0; i < m_multiRTCount; i++)
-	{
-		m_rtvHandles.push_back(rtvHandle);
-		RGD3D.GetDevice()->CreateRenderTargetView(m_rt[i]->GetResource().Get(), nullptr, m_rtvHandles.back());
-		rtvHandle.Offset(1, m_rtvDescriptorSize);
-	}
-
-	return true;
-}
 
 // ディスクリプタヒープの作成
 bool RgRenderTargets::CreateDescriptorHeap()
@@ -264,7 +239,7 @@ bool RgRenderTargets::CreateDescriptorHeap()
 	return true;
 }
 
-void RgRenderTargets::SetRenderTargets(ComPtr<ID3D12GraphicsCommandList>& comList)
+void RgRenderTargets::CreateCommand_SetRTV_All(ComPtr<ID3D12GraphicsCommandList>& comList)
 {
 	for (UINT i = 0; i < m_multiRTCount; i++)
 	{
@@ -276,21 +251,155 @@ void RgRenderTargets::SetRenderTargets(ComPtr<ID3D12GraphicsCommandList>& comLis
 		RGD3D.m_texCommandList->ResourceBarrier(1, &barrier);
 	}
 	comList->OMSetRenderTargets(
-		m_multiRTCount, &m_rtvHandles[0], false, nullptr);
+		m_multiRTCount, &m_rtvHandle, false, nullptr);
 }
 
-void RgRenderTargets::CreateCommandSetSRV(
-	const UINT rtNum, 
-	const ComPtr<ID3D12GraphicsCommandList>& command, 
-	const UINT paraNum)const
+void RgRenderTargets::CreateCommand_SetRTV(
+	const UINT num, ComPtr<ID3D12GraphicsCommandList>& comList)
 {
-	if (rtNum >= m_multiRTCount)return;
+	if (num >= m_multiRTCount)return;
+
 	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		m_rt[rtNum]->GetResource().Get(),
+		m_rt[num]->GetResource().Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_RENDER_TARGET
+	);
+	RGD3D.m_texCommandList->ResourceBarrier(1, &barrier);
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE workHandle = m_rtvHandle;
+	workHandle.Offset(num, m_rtvDescriptorSize);
+	comList->OMSetRenderTargets(
+		1, &workHandle, false, nullptr);
+}
+
+void RgRenderTargets::CreateCommand_ResetRTV_All(
+	ComPtr<ID3D12GraphicsCommandList>& comList)
+{
+	for (UINT i = 0; i < m_multiRTCount; i++)
+	{
+		auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+			m_rt[i]->GetResource().Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PRESENT
+		);
+		RGD3D.m_texCommandList->ResourceBarrier(1, &barrier);
+	}
+}
+void RgRenderTargets::CreateCommand_ResetRTV(
+	const UINT num, ComPtr<ID3D12GraphicsCommandList>& comList)
+{
+	if (num >= m_multiRTCount)return;
+	// レンダーターゲットからスワップチェイン表示可能へ
+	auto barrierToPresent = CD3DX12_RESOURCE_BARRIER::Transition(
+		m_rt[num]->GetResource().Get(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		D3D12_RESOURCE_STATE_PRESENT
+	);
+	RGD3D.m_texCommandList->ResourceBarrier(1, &barrierToPresent);
+}
+
+void RgRenderTargets::CreateCommand_SetSRV(
+	const UINT num, const ComPtr<ID3D12GraphicsCommandList>& command, const UINT paraNum)const
+{
+	if (num >= m_multiRTCount)return;
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		m_rt[num]->GetResource().Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 	);
 	command->ResourceBarrier(1, &barrier);
 
-	m_rt[rtNum]->CreateCommandSetSRV(command, paraNum);
+	m_rt[num]->CreateCommandSetSRV(command, paraNum);
+}
+
+void RgRenderTargets::ClearRT_All(
+	RgCommandList& comList, const RgVec4 clearColor)
+{
+	for (UINT i = 0; i < m_multiRTCount; i++)
+	{
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(
+			m_heapRtv->GetCPUDescriptorHandleForHeapStart(),
+			i, m_rtvDescriptorSize);
+		// カラーバッファ(レンダーターゲットビュー)のクリア
+		comList.GetCommandList()->ClearRenderTargetView(rtv, &clearColor.x, 0, nullptr);
+	}
+}
+void RgRenderTargets::ClearRt(
+	const UINT num, RgCommandList& comList, const RgVec4 clearColor)
+{
+	if (num >= m_multiRTCount)return;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(
+		m_heapRtv->GetCPUDescriptorHandleForHeapStart(),
+		num, m_rtvDescriptorSize);
+	// カラーバッファ(レンダーターゲットビュー)のクリア
+	comList.GetCommandList()->ClearRenderTargetView(rtv, &clearColor.x, 0, nullptr);
+}
+
+void RgRenderTargets::SetUp(const UINT rtNum, const UINT w, const UINT h)
+{
+	m_IsSetUp = true;
+
+	m_multiRTCount = rtNum;
+	m_rtW = w;
+	m_rtH = h;
+
+	// RTV用ディスクリプタヒープ作成
+	CreateDescriptorHeap();
+	// ディスクリプタヒープの先頭のハンドルを保持する
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(
+		m_heapRtv->GetCPUDescriptorHandleForHeapStart());
+	m_rtvHandle = rtvHandle;	
+}
+
+bool RgRenderTargets::CreateRT_All(DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM)
+{
+	if (m_IsSetUp == false)return false;
+
+	//==========================
+	// テクスチャ作成
+	//==========================
+	for (int i = 0; i < m_multiRTCount; i++)
+	{
+		auto rt = std::make_shared<RgTexture2D>();
+		rt->CreateTexAndSRV(m_rtW, m_rtH, format);
+		m_rt.push_back(rt);
+	}
+	//==========================
+	// テクスチャにRTVを作成する
+	//==========================
+	CD3DX12_CPU_DESCRIPTOR_HANDLE workHandle = m_rtvHandle;
+	for (int i = 0; i < m_multiRTCount; i++)
+	{
+		RGD3D.GetDevice()->CreateRenderTargetView(m_rt[i]->GetResource().Get(), nullptr, workHandle);
+		workHandle.Offset(1, m_rtvDescriptorSize);
+	}
+
+	return true;
+}
+
+bool RgRenderTargets::CreateRT(
+	DXGI_FORMAT format,
+	const UINT w = 0, const UINT h = 0)
+{
+	if (m_IsSetUp == false)return false;
+	if (m_rt.size() >= m_multiRTCount)
+		return false;
+
+	// RTサイズを計算
+	UINT useW = w, useH = h;
+	if (useW == 0)useW = m_rtW;
+	if (useH == 0)useH = m_rtH;
+
+	// テクスチャ作成
+	auto rt = std::make_shared<RgTexture2D>();
+	rt->CreateTexAndSRV(useW, useH, format);
+	m_rt.push_back(rt);
+
+	// RTV作成
+	int now = (int)m_rt.size() - 1;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE workHandle = m_rtvHandle;
+	workHandle.Offset((UINT)now, m_rtvDescriptorSize);
+	RGD3D.GetDevice()->CreateRenderTargetView(m_rt.back()->GetResource().Get(), nullptr, workHandle);
+
+	return true;
 }

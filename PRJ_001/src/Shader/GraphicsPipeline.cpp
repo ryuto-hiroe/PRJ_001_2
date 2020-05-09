@@ -23,9 +23,13 @@ bool GraphicsPipeline::Init()
 	// デバッグ用コマンドリストの作成
 	m_debugCommandList.Create();
 
-
 	// 描画コマンドリセット
 	m_modelDrawCalls.clear();
+
+	//===============================
+	// RT作成
+	//===============================
+	//if (m_rts.CreateRT())
 
 	//===============================
 	// 定数バッファの初期化
