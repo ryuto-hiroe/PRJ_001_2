@@ -118,7 +118,7 @@ bool ImGuiBeginPopup_ResourceBrowser(const std::string& id, std::string& inoutFi
 				sFolderList.back().m_Path = item;
 				// 現在のファイルと同じフォルダなら、選択indexを指定する
 				if (parentpath == item) {
-					sSelectIndex = sFolderList.size() - 1;
+					sSelectIndex = (int)sFolderList.size() - 1;
 				}
 			}
 		}

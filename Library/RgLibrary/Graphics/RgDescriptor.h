@@ -69,7 +69,7 @@ public:
 	void Free(const UINT index);
 
 	// ƒRƒ}ƒ“ƒh‚ğì¬
-	void MakeCommand(ComPtr<ID3D12GraphicsCommandList> comList);
+	void MakeCommand();
 
 	// ‰ğ•ú
 	void Release();

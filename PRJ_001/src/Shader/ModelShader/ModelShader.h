@@ -13,12 +13,12 @@ public:
 
 	// •`‰æ‘O€”õ
 	//void SetUp();
-	void SetUp(ComPtr<ID3D12GraphicsCommandList>& comList);
+	void SetUp();
 
 	//===========================
 	// •`‰æŠÖ”
 	//===========================
-	void DrawModel(const RgModel& model, ComPtr<ID3D12GraphicsCommandList>& comList);
+	void DrawModel(const RgModel& model);
 
 
 	//===========================

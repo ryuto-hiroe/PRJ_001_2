@@ -107,6 +107,9 @@ bool RgD3D::Init(HWND hWnd, int w, int h)
 		swapchain.As(&m_swapchain); // IDXGISwapChain4 取得
 	}
 
+	//m_backBuffer.SetUp(FrameBufferCount, )
+
+
 	// 各ディスクリプタヒープの準備.
 	if (PrepareDescriptorHeaps() == false) {
 		return false;
@@ -154,33 +157,12 @@ void RgD3D::Release()
 void RgD3D::BeginFrame()
 {
 	m_frameIndex = m_swapchain->GetCurrentBackBufferIndex();
-
-	//m_barrierToRT = CD3DX12_RESOURCE_BARRIER::Transition(
-	//	m_renderTargets[m_frameIndex].Get(),
-	//	D3D12_RESOURCE_STATE_PRESENT,
-	//	D3D12_RESOURCE_STATE_RENDER_TARGET
-	//);
-	//
-	//CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(
-	//	m_heapRtv->GetCPUDescriptorHandleForHeapStart(),
-	//	m_frameIndex, m_rtvDescriptorSize);
-	//m_rtv = rtv;
-	//
-	//CD3DX12_CPU_DESCRIPTOR_HANDLE dsv(
-	//	m_heapDsv->GetCPUDescriptorHandleForHeapStart()
-	//);
-	//m_dsv = dsv;
 }
 
-void RgD3D::SetBackBuffer(RgCommandList& comList)
+void RgD3D::SetBackBuffer()
 {
 	// スワップチェイン表示可能からレンダーターゲット描画可能へ
-	auto barrierToRT = CD3DX12_RESOURCE_BARRIER::Transition(
-		m_renderTargets[m_frameIndex].Get(),
-		D3D12_RESOURCE_STATE_PRESENT,
-		D3D12_RESOURCE_STATE_RENDER_TARGET
-	);
-	comList.GetCommandList()->ResourceBarrier(1, &barrierToRT);
+	m_bbRes[m_frameIndex].BarrierToRT();
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(
 		m_heapRtv->GetCPUDescriptorHandleForHeapStart(),
@@ -190,24 +172,22 @@ void RgD3D::SetBackBuffer(RgCommandList& comList)
 	);
 
 	// 描画先をセット
-	comList.GetCommandList()->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
-	// ビューポートとシザーのセット
-	comList.GetCommandList()->RSSetViewports(1, &m_viewport);
-	comList.GetCommandList()->RSSetScissorRects(1, &m_scissorRect);
+	GetCL()->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+	GetCL()->RSSetViewports(1, &m_viewport);
+	GetCL()->RSSetScissorRects(1, &m_scissorRect);
+	//comList.GetCommandList()->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+	//// ビューポートとシザーのセット
+	//comList.GetCommandList()->RSSetViewports(1, &m_viewport);
+	//comList.GetCommandList()->RSSetScissorRects(1, &m_scissorRect);
 }
 
-void RgD3D::ResetBackBuffer(RgCommandList& comList)
+void RgD3D::ResetBackBuffer()
 {
 	// レンダーターゲットからスワップチェイン表示可能へ
-	auto barrierToPresent = CD3DX12_RESOURCE_BARRIER::Transition(
-		m_renderTargets[m_frameIndex].Get(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET,
-		D3D12_RESOURCE_STATE_PRESENT
-	);
-	comList.GetCommandList()->ResourceBarrier(1, &barrierToPresent);
+	m_bbRes[m_frameIndex].BarrierToPresent();
 }
 
-void RgD3D::ClearBackBuffer(RgCommandList& comList, const RgVec4 clearColor)
+void RgD3D::ClearBackBuffer(const RgVec4 clearColor)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(
 		m_heapRtv->GetCPUDescriptorHandleForHeapStart(),
@@ -217,9 +197,9 @@ void RgD3D::ClearBackBuffer(RgCommandList& comList, const RgVec4 clearColor)
 	);
 
 	// カラーバッファ(レンダーターゲットビュー)のクリア
-	comList.GetCommandList()->ClearRenderTargetView(rtv, &clearColor.x, 0, nullptr);
+	GetCL()->ClearRenderTargetView(rtv, &clearColor.x, 0, nullptr);
 	// デプスバッファ(デプスステンシルビュー)のクリア
-	comList.GetCommandList()->ClearDepthStencilView(
+	GetCL()->ClearDepthStencilView(
 		dsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
@@ -290,17 +270,17 @@ bool RgD3D::PrepareDescriptorHeaps()
 }
 bool RgD3D::PrepareRenderTargetView()
 {
-	// スワップチェインイメージへのレンダーターゲットビュー生成
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(
 		m_heapRtv->GetCPUDescriptorHandleForHeapStart());
+	m_bbRes.resize(FrameBufferCount);
 	for (UINT i = 0; i < FrameBufferCount; ++i)
 	{
-		m_swapchain->GetBuffer(i, IID_PPV_ARGS(&m_renderTargets[i]));
-		m_device->CreateRenderTargetView(m_renderTargets[i].Get(), nullptr, rtvHandle);
-		// 参照するディスクリプタの変更
+		ComPtr<ID3D12Resource1> work;
+		m_swapchain->GetBuffer(i, IID_PPV_ARGS(&work));
+		m_bbRes[i].SetResource(work);
+		m_device->CreateRenderTargetView(m_bbRes[i].GetResource().Get(), nullptr, rtvHandle);
 		rtvHandle.Offset(1, m_rtvDescriptorSize);
 	}
-
 	return true;
 }
 bool RgD3D::CreateDepthBuffer(int width, int height)

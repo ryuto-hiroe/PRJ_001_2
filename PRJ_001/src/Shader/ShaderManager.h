@@ -49,10 +49,9 @@ public:
 	}
 	// カメラを設定するコマンドを作成
 	void CreateSetCameraCommand(
-		const UINT num,
-		ComPtr<ID3D12GraphicsCommandList>& comList)
+		const UINT num)
 	{
-		m_cb10_Camera.CreateCommandSetCBV(comList, num);
+		m_cb10_Camera.CreateCommandSetCBV(num);
 	}
 
 

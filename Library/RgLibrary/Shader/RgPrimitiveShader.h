@@ -16,7 +16,7 @@ public:
 	void Release();
 
 	// •`‰æ‘O€”õ
-	void SetUp(ComPtr<ID3D12GraphicsCommandList>& comList);
+	void SetUp();
 
 	// ƒJƒƒ‰İ’è
 	void SetCamera(const RgMatrix& mV, const RgMatrix& mP)
@@ -35,14 +35,12 @@ public:
 		const RgVec3& pos1,
 		const RgVec3& pos2,
 		const RgVec4& color,
-		ComPtr<ID3D12GraphicsCommandList>& comList,
 		const RgMatrix* mat = (RgMatrix*)&RgMatrix::Identity
 	);
 
 	void DrawLine(
 		const RgLineModel& model, 
-		const RgVec4& color, 
-		ComPtr<ID3D12GraphicsCommandList>& comList,
+		const RgVec4& color,
 		const RgMatrix* mat = (RgMatrix*)&RgMatrix::Identity);
 
 

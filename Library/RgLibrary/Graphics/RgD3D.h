@@ -22,13 +22,13 @@ public:
 	void BeginFrame();
 
 	// バックバッファの設定
-	void SetBackBuffer(RgCommandList& comList);
+	void SetBackBuffer();
 
 	// バックバッファを表示可能にする
-	void ResetBackBuffer(RgCommandList& comList);
+	void ResetBackBuffer();
 
 	// バックバッファをクリア
-	void ClearBackBuffer(RgCommandList& comList, const RgVec4 clearColor = { 0.1f,0.25f,0.5f,1.0f });
+	void ClearBackBuffer(const RgVec4 clearColor = { 0.1f,0.25f,0.5f,1.0f });
 
 	//============================================
 	// シェーダコンパイラ(shader model 6)
@@ -63,6 +63,9 @@ public:
 	std::vector<ComPtr<ID3D12Resource1>> m_renderTargets;
 	ComPtr<ID3D12Resource1> m_depthBuffer;
 
+	RgRenderTargetViews m_backBuffer;
+	std::vector<RgTexture2D> m_bbRes;
+
 	CD3DX12_VIEWPORT  m_viewport;
 	CD3DX12_RECT m_scissorRect;
 
@@ -76,11 +79,21 @@ public:
 	ComPtr<ID3D12GraphicsCommandList> m_texCommandList;
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE m_rtv;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE m_dsv;
+	//CD3DX12_CPU_DESCRIPTOR_HANDLE m_dsv;
 	CD3DX12_RESOURCE_BARRIER m_barrierToRT;
 
-
 	UINT m_frameIndex;
+
+
+	//============================================
+	// コマンドリスト設定・取得
+	//============================================
+	void SetUseCL(const std::shared_ptr<RgCommandList>& cl) {
+		m_nowUseComList = cl;
+	}
+	ComPtr<ID3D12GraphicsCommandList>& GetCL() {
+		return m_nowUseComList->GetCommandList();
+	}
 
 	//============================================
 	// 作成・準備関数
@@ -103,6 +116,11 @@ private:
 
 		m_fenceWaitEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	}
+
+
+	// 現在使用しているコマンドリスト
+	std::shared_ptr<RgCommandList> m_nowUseComList = nullptr;
+
 
 public:
 	static RgD3D& GetInstance() {

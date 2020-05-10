@@ -40,7 +40,7 @@ public:
 	bool Create(const UINT dataNum);
 
 	// CBVを設定するコマンドを作成
-	void CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command)const;
+	void CreateCommandSetCBV()const;
 
 	// データ書き込み
 	void WriteData();
@@ -105,7 +105,7 @@ public:
 	bool Create();
 
 	// CBVを設定するコマンドを作成
-	void CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command, UINT paraNum)const;
+	void CreateCommandSetCBV(UINT paraNum)const;
 	
 	// データ書き込み
 	void WriteData();
@@ -171,7 +171,7 @@ public:
 	bool Create();
 
 	// CBVを設定するコマンドを作成
-	void CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command, UINT paraNum);
+	void CreateCommandSetCBV(UINT paraNum);
 
 
 

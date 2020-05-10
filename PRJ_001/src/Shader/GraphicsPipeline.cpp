@@ -14,22 +14,20 @@ bool GraphicsPipeline::Init()
 	m_ModelDrawCommandList.resize(m_threadNum);
 	for (auto&& comList : m_ModelDrawCommandList)
 	{
-		comList.Create();
+		comList = std::make_shared<RgCommandList>();
+		comList->Create();
 	}
 
 	// GUI用コマンドリストの作成
-	m_guiCommandList.Create();
+	m_guiCommandList = std::make_shared<RgCommandList>();
+	m_guiCommandList->Create();
 
 	// デバッグ用コマンドリストの作成
-	m_debugCommandList.Create();
+	m_debugCommandList = std::make_shared<RgCommandList>();
+	m_debugCommandList->Create();
 
 	// 描画コマンドリセット
 	m_modelDrawCalls.clear();
-
-	//===============================
-	// RT作成
-	//===============================
-	//if (m_rts.CreateRT())
 
 	//===============================
 	// 定数バッファの初期化
@@ -46,92 +44,92 @@ void GraphicsPipeline::Draw()
 	//===============
 	// モデル描画開始
 	//===============
-	m_ModelDrawCommandList[0].Begin();
+	m_ModelDrawCommandList[0]->Begin();
 	{
 		// レンダーターゲットを設定する
-		RGD3D.SetBackBuffer(m_ModelDrawCommandList[0]);
-		RGD3D.ClearBackBuffer(m_ModelDrawCommandList[0]);
+		RGD3D.SetBackBuffer();
+		RGD3D.ClearBackBuffer();
 
 		// SRV、CBV用のディスクリプタヒープを設定
-		RGHEAPMGR.MakeCommand(m_ModelDrawCommandList[0].GetCommandList());
+		RGHEAPMGR.MakeCommand();
 
 		// モデルシェーダを設定
-		SHMGR.m_ModelSh.SetUp(m_ModelDrawCommandList[0].GetCommandList());
+		SHMGR.m_ModelSh.SetUp();
 
 		// カメラを設定
-		CreateSetCameraCommand(2, m_ModelDrawCommandList[0].GetCommandList());
+		CreateSetCameraCommand(2);
 
 		// 作成した描画関数を実行する
 		for (auto&& call : m_modelDrawCalls)
 		{
-			call(m_ModelDrawCommandList[0]);
+			call();
 		}
 
 		// レンダーターゲットを表示可能にする
-		RGD3D.ResetBackBuffer(m_ModelDrawCommandList[0]);
+		RGD3D.ResetBackBuffer();
 	}
-	m_ModelDrawCommandList[0].End();
+	m_ModelDrawCommandList[0]->End();
 
 	//===============
 	// デバッグ描画
 	//===============
-	m_debugCommandList.Begin();
+	m_debugCommandList->Begin();
 	{
 		// レンダーターゲットを設定する
-		RGD3D.SetBackBuffer(m_debugCommandList);
+		RGD3D.SetBackBuffer();
 
 		// SRV、CBV用のディスクリプタヒープを設定
-		RGHEAPMGR.MakeCommand(m_debugCommandList.GetCommandList());
+		RGHEAPMGR.MakeCommand();
 
 		// シェーダを設定
-		SHMGR.m_PrimSh.SetUp(m_debugCommandList.GetCommandList());
+		SHMGR.m_PrimSh.SetUp();
 
 		// カメラを設定
-		CreateSetCameraCommand(1, m_debugCommandList.GetCommandList());
+		CreateSetCameraCommand(1);
 
 		// 描画関数実行
-		m_debugDrawCall(m_debugCommandList);
+		m_debugDrawCall();
 
 		// レンダーターゲットを表示可能にする
-		RGD3D.ResetBackBuffer(m_debugCommandList);
+		RGD3D.ResetBackBuffer();
 	}
-	m_debugCommandList.End();
+	m_debugCommandList->End();
 
 	//===============
 	// GUI描画開始
 	//===============
-	m_guiCommandList.Begin();
+	m_guiCommandList->Begin();
 	{
 		// レンダーターゲットを設定する
-		RGD3D.SetBackBuffer(m_guiCommandList);
+		RGD3D.SetBackBuffer();
 	
 		// SRV、CBV用のディスクリプタヒープを設定
-		RGHEAPMGR.MakeCommand(m_guiCommandList.GetCommandList());
+		RGHEAPMGR.MakeCommand();
 	
 		// GUI描画関数
 		ImGui::Render();
 		ImGui_ImplDX12_RenderDrawData(
 			ImGui::GetDrawData(),
-			m_guiCommandList.GetCommandList().Get()
+			m_guiCommandList->GetCommandList().Get()
 		);
 	
 		// レンダーターゲットを表示可能にする
-		RGD3D.ResetBackBuffer(m_guiCommandList);
+		RGD3D.ResetBackBuffer();
 	}
-	m_guiCommandList.End();
+	m_guiCommandList->End();
 
 	//===============
 	// コマンドの実行
 	//===============
 	std::vector<ID3D12CommandList*> comLists;
 	// モデル描画コマンドリストを登録
-	comLists.push_back(m_ModelDrawCommandList[0].GetCommandList().Get());
+	comLists.push_back(m_ModelDrawCommandList[0]->GetCommandList().Get());
 	// デバッグ描画コマンドリストを登録
-	comLists.push_back(m_debugCommandList.GetCommandList().Get());
+	comLists.push_back(m_debugCommandList->GetCommandList().Get());
 	// GUI描画コマンドリストを登録
-	comLists.push_back(m_guiCommandList.GetCommandList().Get());
+	comLists.push_back(m_guiCommandList->GetCommandList().Get());
 	// コマンドの実行
-	RGD3D.GetCommandQueue()->ExecuteCommandLists(comLists.size(), &comLists[0]);
+	RGD3D.GetCommandQueue()->ExecuteCommandLists((UINT)comLists.size(), &comLists[0]);
 
 	//===============
 	// 描画関数をクリア
@@ -143,6 +141,6 @@ void GraphicsPipeline::Draw()
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault(NULL, (void*)GPL.GetGuiCommandList().GetCommandList().Get());
+		ImGui::RenderPlatformWindowsDefault(NULL, (void*)m_guiCommandList->GetCommandList().Get());
 	}
 }

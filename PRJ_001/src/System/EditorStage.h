@@ -9,7 +9,7 @@ public:
 	bool Create();
 
 	// •`‰æ
-	void Draw(RgCommandList& comList);
+	void Draw();
 
 private:
 

@@ -42,6 +42,7 @@ bool RgCommandList::Create(const UINT num)
 
 void RgCommandList::Begin()
 {
+	RGD3D.SetUseCL(shared_from_this());
 	m_commandAllocators[RGD3D.m_frameIndex]->Reset();
 	m_commandList->Reset(m_commandAllocators[RGD3D.m_frameIndex].Get(), nullptr);
 }

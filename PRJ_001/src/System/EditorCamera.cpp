@@ -8,8 +8,7 @@ void EditorCamera::Update()
 	//============================
 	// 射影行列
 	//============================
-	//SHMGR.m_mProj.CreatePerspectiveFovLH(60, 1.7777777779, 0.01f, 10000.0f);
-	GPL.m_mProj.CreatePerspectiveFovLH(60, 1.7777777779, 0.01f, 10000.0f);
+	GPL.m_mProj.CreatePerspectiveFovLH(60, 1.7777779f, 0.01f, 10000.0f);
 
 	//============================
 	// ビュー行列

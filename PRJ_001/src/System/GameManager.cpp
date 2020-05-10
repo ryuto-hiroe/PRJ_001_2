@@ -84,7 +84,7 @@ void Object::ImGuiUpdate()
 	for (auto&& comp : m_components)
 	{
 		// アドレスの識別IDとしてセットする
-		ImGui::PushID((int)comp.get());
+		ImGui::PushID(comp.get());
 
 		bool bOpen = ImGui::CollapsingHeader(comp->ClassName().c_str()
 			, ImGuiTreeNodeFlags_DefaultOpen);
@@ -256,9 +256,9 @@ void GameManager::Run()
 	m_level->Draw();
 	
 	// デバッグ描画
-	std::function<void(RgCommandList&)> debuhDraw = [this](RgCommandList& comList)
+	std::function<void()> debuhDraw = [this]()
 	{
-		m_EditorStage.Draw(comList);
+		m_EditorStage.Draw();
 	};
 	GPL.SetDebugDrawCall(debuhDraw);
 

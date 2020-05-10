@@ -116,19 +116,18 @@ void RgPrimitiveShader::Release()
 	
 }
 
-void RgPrimitiveShader::SetUp(ComPtr<ID3D12GraphicsCommandList>& comList)
+void RgPrimitiveShader::SetUp()
 {
 	// パイプラインステートのセット
-	comList->SetPipelineState(m_pipeline.Get());
+	RGD3D.GetCL()->SetPipelineState(m_pipeline.Get());
 	// ルートシグネチャのセット
-	comList->SetGraphicsRootSignature(m_rootSignature.Get());
+	RGD3D.GetCL()->SetGraphicsRootSignature(m_rootSignature.Get());
 }
 
 void RgPrimitiveShader::DrawLine(
 	const RgVec3& pos1,
 	const RgVec3& pos2,
 	const RgVec4& color,
-	ComPtr<ID3D12GraphicsCommandList>& comList,
 	const RgMatrix* mat
 )
 {
@@ -136,7 +135,7 @@ void RgPrimitiveShader::DrawLine(
 	m_cb0_Object.GetWork().mWorld = *mat;
 	m_cb0_Object.GetWork().color = color;
 	m_cb0_Object.WriteData();
-	m_cb0_Object.CreateCommandSetCBV(comList, 0);
+	m_cb0_Object.CreateCommandSetCBV(0);
 
 	// 頂点作成
 	RgVertex_Pos vertex[] = {
@@ -147,28 +146,26 @@ void RgPrimitiveShader::DrawLine(
 	m_vb.GetWork()[0].pos = pos1;
 	m_vb.GetWork()[1].pos = pos2;
 	m_vb.WriteData();
-	m_vb.CreateCommandSetCBV(comList);
-	comList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_vb.CreateCommandSetCBV();
+	RGD3D.GetCL()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	comList->DrawInstanced(2, 1, 0, 0);
+	RGD3D.GetCL()->DrawInstanced(2, 1, 0, 0);
 }
 
 void RgPrimitiveShader::DrawLine(
 	const RgLineModel& model, 
-	const RgVec4& color, 
-	ComPtr<ID3D12GraphicsCommandList>& comList,
+	const RgVec4& color,
 	const RgMatrix* mat)
 {
 	// 定数バッファ更新
 	m_cb0_Object.GetWork().mWorld = *mat;
 	m_cb0_Object.GetWork().color = color;
 	m_cb0_Object.WriteData();
-	m_cb0_Object.CreateCommandSetCBV(comList, 0);
+	m_cb0_Object.CreateCommandSetCBV(0);
 
-	model.CreateCommandSetCBV(comList);
+	model.CreateCommandSetCBV();
 
-	//comList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	comList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	RGD3D.GetCL()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-	comList->DrawInstanced(2, 1, 0, 0);
+	RGD3D.GetCL()->DrawInstanced(2, 1, 0, 0);
 }

@@ -27,7 +27,15 @@ public:
 	//
 	//================================================
 	// コマンド作成
-	void CreateCommandSetSRV(const ComPtr<ID3D12GraphicsCommandList>& command, const UINT paraNum)const;
+	void CreateCommandSetSRV(const UINT paraNum)const;
+
+	// リソースを外部から設定する
+	void SetResource(ComPtr<ID3D12Resource1> resource, bool isSrv = false);
+
+	// リソースバリアをRT可能状態にする
+	void BarrierToRT();
+	// リソースバリアをスワップチェイン表示可能状態にする
+	void BarrierToPresent();
 
 	//================================================
 	//
@@ -61,18 +69,12 @@ public:
 	// リソースを取得
 	const ComPtr<ID3D12Resource1> GetResource() { return m_texture2D; }
 
+	// テクスチャ情報構造体取得
+	const D3D12_RESOURCE_DESC& GetInfo() { return m_desc; }
+
 	// SRVがあるか？
 	bool IsSRV() {
 		if (m_srv.index < 0) {
-			return false;
-		}
-		return true;
-	}
-
-	// RTVがあるか?
-	bool IsRTV()
-	{
-		if (m_rtv.index < 0) {
 			return false;
 		}
 		return true;
@@ -88,14 +90,9 @@ private:
 	// データ
 	//
 	//================================================
-	// ファイル名(LoadTextureした場合のみ)
-	std::string			m_filepath;
-
-	// テクスチャリソース
-	ComPtr<ID3D12Resource1>			m_texture2D = nullptr;
-
-	// フォーマット
-	DXGI_FORMAT m_format = {};
+	std::string				m_filepath;		// ファイル名(LoadTextureした場合のみ)
+	ComPtr<ID3D12Resource1>	m_texture2D = nullptr;// テクスチャリソース
+	D3D12_RESOURCE_DESC		m_desc = {};	// リソース情報構造体
 
 	//-------------------------
 	// SRV
@@ -106,99 +103,50 @@ private:
 	//	12では、ディスクリプタヒープにViewを作成し、使うときは
 	//	ディスクリプタヒープに作成した場所のハンドルを使用する
 	RgHeapHandle m_srv;
-
-	//-------------------------
-	// RTV
-	//-------------------------
-	D3D12_RENDER_TARGET_VIEW_DESC m_rtvDesc = {};
-	// 
-	RgHeapHandle m_rtv;
 };
 
 
-//===============================================================
-//
-// Render Targetのクラス
-//	・RTテクスチャを作成して管理するクラス
-//	・マルチレンダーターゲット対応
-//
-//===============================================================
-class RgRenderTargets
+// 
+class RgRenderTargetViews
 {
 public:
 
-	// レンダーターゲットの情報を設定
-	// ※レンダーターゲット作成前に必ず呼ぶ
-	void SetUp(const UINT rtNum, const UINT w, const UINT h);
+	// RTVを作成する
+	bool CreateRTVs(const std::vector<ComPtr<ID3D12Resource1>>& resources);
 
-	//================================================
-	//
-	// 作成関数
-	//
-	//================================================
-	// 初期設定で指定したサイズ、枚数のRTテクスチャを作成する
-	// ※フォーマットはすべて同じとなる
-	bool CreateRT_All(DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM);
+	// RTV Descriptor Handle 取得
+	const D3D12_CPU_DESCRIPTOR_HANDLE GetRTV_Desc_Handle()const {
+		return m_heapRtv->GetCPUDescriptorHandleForHeapStart();
+	}
 
-	// 1枚ずつレンダーターゲットを作成する
-	// ※初期設定で決めた大きさ以外が設定できる(何も設定しない場合はデフォルトの大きさになる)
-	// ※フォーマットもそれぞれ変更できる
-	bool CreateRT(
-		DXGI_FORMAT format,
-		const UINT w = 0, const UINT h = 0);
+	// RTV枚数取得
+	const UINT GetRTCount()const { return m_multiRTCount; }
 
+private:
 	// ディスクリプタヒープの作成
 	bool CreateDescriptorHeap();
 
-	//================================================
-	//
+private:
+	UINT m_multiRTCount = 1;				// RTVの数
+	ComPtr<ID3D12DescriptorHeap> m_heapRtv;	// RTV用ディスクリプタヒープ
+	UINT m_rtvDescriptorOffset = 0;			// RTVの一つの大きさ
+};
+
+
+class RgRTChanger
+{
+public:
+
 	// 設定関係
-	//
-	//================================================
-	// レンダーターゲットを設定する
-	void CreateCommand_SetRTV_All(ComPtr<ID3D12GraphicsCommandList>& comList);
-	void CreateCommand_SetRTV(const UINT num, ComPtr<ID3D12GraphicsCommandList>& comList);
-
-	// レンダーターゲットを解除する
-	void CreateCommand_ResetRTV_All(ComPtr<ID3D12GraphicsCommandList>& comList);
-	void CreateCommand_ResetRTV(const UINT num, ComPtr<ID3D12GraphicsCommandList>& comList);
-
-	// シェーダリソースビューを設定する
-	void CreateCommand_SetSRV(const UINT rtNum, const ComPtr<ID3D12GraphicsCommandList>& command, const UINT paraNum)const;
-	//void CreateCommand_SetSRV_ALL(const UINT rtNum, const ComPtr<ID3D12GraphicsCommandList>& command, const UINT paraNum)const;
-
-	// RTをクリアする
-	void ClearRT_All(RgCommandList& comList, const RgVec4 clearColor);
-	void ClearRt(const UINT num, RgCommandList& comList, const RgVec4 clearColor);
-
-	//================================================
-	//
-	// 取得関係
-	//
-	//================================================
+	// RTVを設定
+	void SetRTV(RgRenderTargetViews* rtv);
+	// DSVを設定
+	void SetDSV(const D3D12_CPU_DESCRIPTOR_HANDLE& dsv);
 
 	// 
-	void Release(){}
+	void CreateCommand_SetRtvDsv(const ComPtr<ID3D12GraphicsCommandList>& command);
 
 private:
-	// 初期設定したか？
-	bool m_IsSetUp = false;
-
-	// 
-	std::vector<std::shared_ptr<RgTexture2D>> m_rt;
-	// RTV用ディスクリプタヒープハンドル
-	CD3DX12_CPU_DESCRIPTOR_HANDLE m_rtvHandle;
-
-	// マルチレンダーターゲットの枚数
-	UINT m_multiRTCount = 1;
-	// レンダーターゲットの大きさ
-	UINT m_rtW;
-	UINT m_rtH;
-
-	// RTV用ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> m_heapRtv;
-	//
-	UINT m_rtvDescriptorSize = 0;
-	// 使用している数
-	UINT m_useDescriptorNum = 0;
+	D3D12_CPU_DESCRIPTOR_HANDLE m_depthHandle = {};
+	RgRenderTargetViews* m_rtvs = nullptr;
 };

@@ -133,13 +133,14 @@ void RgSrvCbvUavHeapManager::Free(const UINT index)
 	}
 }
 
-void RgSrvCbvUavHeapManager::MakeCommand(ComPtr<ID3D12GraphicsCommandList> comList)
+void RgSrvCbvUavHeapManager::MakeCommand()
 {
 	// ディスクリプタヒープをセット
 	ID3D12DescriptorHeap* heaps[] = {
 		m_heap.Get()
 	};
-	comList->SetDescriptorHeaps(_countof(heaps), heaps);
+	RGD3D.GetCL()->SetDescriptorHeaps(_countof(heaps), heaps);
+	//comList->SetDescriptorHeaps(_countof(heaps), heaps);
 }
 
 void RgSrvCbvUavHeapManager::Release()

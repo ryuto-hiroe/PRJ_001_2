@@ -121,20 +121,19 @@ void ModelShader::Release()
 
 }
 
-//void ModelShader::SetUp(ComPtr<ID3D12GraphicsCommandList>& comList)
-void ModelShader::SetUp(ComPtr<ID3D12GraphicsCommandList>& comList)
+void ModelShader::SetUp()
 {
 	// パイプラインステートのセット
-	comList->SetPipelineState(m_pipeline.Get());
+	RGD3D.GetCL()->SetPipelineState(m_pipeline.Get());
 	// ルートシグネチャのセット
-	comList->SetGraphicsRootSignature(m_rootSignature.Get());
+	RGD3D.GetCL()->SetGraphicsRootSignature(m_rootSignature.Get());
 }
 
-void ModelShader::DrawModel(const RgModel& model, ComPtr<ID3D12GraphicsCommandList>& comList)
+void ModelShader::DrawModel(const RgModel& model)
 {
 	//
 	m_cb0_Object.WriteData();
-	m_cb0_Object.CreateCommandSetCBV(comList, 0);
+	m_cb0_Object.CreateCommandSetCBV(0);
 
 	for (auto&& mesh : model.GetMesh())
 	{
@@ -143,16 +142,16 @@ void ModelShader::DrawModel(const RgModel& model, ComPtr<ID3D12GraphicsCommandLi
 			auto& material = model.GetMaterial()[primitive.GetMaterialIndex()];
 
 			// マテリアルCBV設定
-			material.CreateCommandSetCBV(comList, 1);
+			material.CreateCommandSetCBV(1);
 
 			// メッシュ情報をセット
-			primitive.SetToShader(comList);
+			primitive.SetToShader();
 
 			// マテリアルテクスチャ
-			material.m_tex.CreateCommandSetSRV(comList, 3);
+			material.m_tex.CreateCommandSetSRV(3);
 
 			// 描画
-			comList->DrawIndexedInstanced(primitive.GetIndexCount(), 1, 0, 0, 0);
+			RGD3D.GetCL()->DrawIndexedInstanced(primitive.GetIndexCount(), 1, 0, 0, 0);
 		}
 	}
 }

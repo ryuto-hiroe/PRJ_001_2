@@ -66,10 +66,9 @@ inline void RgDynamicVertexBuffer<DataType>::WriteData()
 }
 
 template<class DataType>
-inline void RgDynamicVertexBuffer<DataType>::CreateCommandSetCBV(
-	ComPtr<ID3D12GraphicsCommandList>& command)const
+inline void RgDynamicVertexBuffer<DataType>::CreateCommandSetCBV()const
 {
-	command->IASetVertexBuffers(0, 1, &m_bufferView);
+	RGD3D.GetCL()->IASetVertexBuffers(0, 1, &m_bufferView);
 }
 
 //=====================================================
@@ -126,10 +125,10 @@ inline void RgStaticConstantBuffer<DataType>::WriteData_AllBuffer()
 
 template<class DataType>
 inline void RgStaticConstantBuffer<DataType>::CreateCommandSetCBV(
-	ComPtr<ID3D12GraphicsCommandList>& command, UINT paraNum)const
+	UINT paraNum)const
 {
-	//command->SetGraphicsRootDescriptorTable(paraNum, m_cbv[RGD3D.m_frameIndex].handle);
-	command->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
+	RGD3D.GetCL()->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
+	//command->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
 }
 
 
@@ -197,8 +196,8 @@ inline void RgDynamicConstantBuffer<DataType>::WriteData()
 }
 
 template<class DataType>
-void RgDynamicConstantBuffer<DataType>::CreateCommandSetCBV(
-	ComPtr<ID3D12GraphicsCommandList>& command, UINT paraNum)
+void RgDynamicConstantBuffer<DataType>::CreateCommandSetCBV(UINT paraNum)
 {
-	command->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
+	RGD3D.GetCL()->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
+	//command->SetGraphicsRootDescriptorTable(paraNum, m_cbv.handle);
 }

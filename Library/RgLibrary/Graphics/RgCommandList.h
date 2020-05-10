@@ -6,7 +6,7 @@
 //	EcommandList‚ÆcommandAllocator‚ğ‚Á‚Ä‚¢‚é
 //
 //=============================================
-class RgCommandList
+class RgCommandList : public std::enable_shared_from_this<RgCommandList>
 {
 public:
 

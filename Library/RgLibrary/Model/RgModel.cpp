@@ -236,7 +236,7 @@ void RgLineModel::Create(const RgVec3& pos1, const RgVec3& pos2)
 	m_bufferView.StrideInBytes = sizeof(LineVertex);
 }
 
-void RgLineModel::CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command)const
+void RgLineModel::CreateCommandSetCBV()const
 {
-	command->IASetVertexBuffers(0, 1, &m_bufferView);
+	RGD3D.GetCL()->IASetVertexBuffers(0, 1, &m_bufferView);
 }

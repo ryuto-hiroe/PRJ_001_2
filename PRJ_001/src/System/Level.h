@@ -37,10 +37,4 @@ private:
 
 	// rootオブジェクト
 	std::shared_ptr<Object> m_root;
-
-	// (仮)
-	RgRenderTargets m_renderTarget;
-
-	//
-	//DrawThreadManager m_threadMgr;
 };

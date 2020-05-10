@@ -9,8 +9,6 @@ void Level::Load()
 {
 	m_root = std::make_shared<Object>();
 	m_root->SetName("root");
-
-	m_renderTarget.CreateRT(APP.m_winW, APP.m_winH, { DXGI_FORMAT_R8G8B8A8_UNORM });
 }
 
 void Level::Save()
@@ -27,8 +25,6 @@ void Level::Draw()
 {
 	// モデル描画の関数を作成
 	m_root->Draw();
-
-
 }
 
 void Level::ImGuiUpdate()
@@ -74,7 +70,7 @@ void Level::ImGuiUpdate()
 			[this, &rec](const std::shared_ptr<Object>& obj)
 		{
 			// アドレスの識別IDとしてセットする
-			ImGui::PushID((int)obj.get());
+			ImGui::PushID(obj.get());
 
 			// ツリーの動作フラグ
 			int treeFlags =

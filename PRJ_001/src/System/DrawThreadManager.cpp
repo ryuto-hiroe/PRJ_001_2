@@ -50,7 +50,7 @@ void DrawThreadManager::CheakObjectList()
 void DrawThreadManager::SetObject(const std::shared_ptr<Object>& p)
 {
 	// 
-	UINT saveNum = m_objectList[0].size();
+	UINT saveNum = (UINT)m_objectList[0].size();
 	
 	// ”‚ª­‚È‚¢ƒXƒŒƒbƒh‚É’Ç‰Á
 	bool addFlag = false;
@@ -97,11 +97,11 @@ void DrawThreadManager:: CreateDrawCommands()
 
 void DrawThreadManager::ExecuteCommandLists()
 {
-	const UINT listNUm = m_commandList.size();
+	const UINT listNUm = (UINT)m_commandList.size();
 	ID3D12CommandList* lists[30];
 	for (UINT i = 0; i < listNUm; i++)
 	{
 		lists[i] = m_commandList[i].GetCommandList().Get();
 	}
-	RGD3D.m_commandQueue->ExecuteCommandLists(m_commandList.size(), lists);
+	RGD3D.m_commandQueue->ExecuteCommandLists((UINT)m_commandList.size(), lists);
 }

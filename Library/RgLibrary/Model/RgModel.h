@@ -36,9 +36,9 @@ public:
 	void Init();
 
 	// CBV設定コマンド作成
-	void CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command, UINT paraNum)const
+	void CreateCommandSetCBV(UINT paraNum)const
 	{
-		m_cb_Material.CreateCommandSetCBV(command, paraNum);
+		m_cb_Material.CreateCommandSetCBV(paraNum);
 	}
 
 	// 定数バッファを取得
@@ -61,11 +61,11 @@ class RgMeshPrimitive
 {
 public:
 	// 頂点・インデックスバッファを設定する
-	void SetToShader(const ComPtr<ID3D12GraphicsCommandList>& command)
+	void SetToShader()
 	{
-		command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		command->IASetVertexBuffers(0, 1, &m_vertexView);
-		command->IASetIndexBuffer(&m_indexView);
+		RGD3D.GetCL()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		RGD3D.GetCL()->IASetVertexBuffers(0, 1, &m_vertexView);
+		RGD3D.GetCL()->IASetIndexBuffer(&m_indexView);
 	}
 
 	//==============================================
@@ -224,7 +224,7 @@ public:
 	//===============================
 	// 設定関係
 	//===============================
-	void CreateCommandSetCBV(ComPtr<ID3D12GraphicsCommandList>& command)const;
+	void CreateCommandSetCBV()const;
 
 private:
 	struct LineVertex

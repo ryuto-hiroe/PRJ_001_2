@@ -17,17 +17,17 @@ public:
 	//
 	//==============================
 	// モデル描画関数を登録
-	void SetModelDrawCall(std::function<void(RgCommandList&)>& fnc)
+	void SetModelDrawCall(std::function<void()>& fnc)
 	{
 		m_modelDrawCalls.push_back(fnc);
 	}
 	// GUI描画関数を登録
-	void SetGUIDrawCall(std::function<void(RgCommandList&)>& fnc)
+	void SetGUIDrawCall(std::function<void()>& fnc)
 	{
 		m_guiDrawCall = fnc;
 	}
 	// デバッグ描画関数を登録
-	void SetDebugDrawCall(std::function<void(RgCommandList&)>& fnc)
+	void SetDebugDrawCall(std::function<void()>& fnc)
 	{
 		m_debugDrawCall = fnc;
 	}
@@ -38,7 +38,7 @@ public:
 	//
 	//==============================
 	// GUIコマンドリスト取得
-	RgCommandList& GetGuiCommandList() { return m_guiCommandList; }
+	//RgCommandList& GetGuiCommandList() { return m_guiCommandList; }
 
 
 private:
@@ -47,26 +47,31 @@ private:
 	// モデル描画関係
 	//===================
 	// 描画関数をためておく配列
-	std::vector<std::function<void(RgCommandList&)>> m_modelDrawCalls;
-	// コマンドリスト
-	// モデル描画用
-	std::vector<RgCommandList> m_ModelDrawCommandList;
+	std::vector<std::function<void()>> m_modelDrawCalls;
 
 	//===================
 	// GUI描画関係
 	//===================
 	// GUI描画関数
-	std::function<void(RgCommandList&)> m_guiDrawCall;
-	// GUI用
-	RgCommandList m_guiCommandList;
+	std::function<void()> m_guiDrawCall;
 
 	//===================
 	// デバッグ描画関係
 	//===================
 	// デバッグ描画関数
-	std::function<void(RgCommandList&)> m_debugDrawCall;
+	std::function<void()> m_debugDrawCall;
 	// デバッグ描画用
-	RgCommandList m_debugCommandList;
+	//RgCommandList m_debugCommandList;
+
+	//===================
+	// コマンドリスト
+	//===================
+	// モデル描画用
+	std::vector<std::shared_ptr<RgCommandList>> m_ModelDrawCommandList;
+	// GUI用
+	std::shared_ptr<RgCommandList> m_guiCommandList = nullptr;
+	// デバッグ描画用
+	std::shared_ptr<RgCommandList> m_debugCommandList = nullptr;
 
 	//===================
 	// マルチスレッド関係
@@ -79,7 +84,6 @@ private:
 	//===================
 	// Render Targets
 	//===================
-	RgRenderTargets m_rts;
 
 	//===================
 	// カメラ関係
@@ -106,11 +110,9 @@ public:
 		m_cb10_Camera.WriteData();
 	}
 	// カメラを設定するコマンドを作成
-	void CreateSetCameraCommand(
-		const UINT num,
-		ComPtr<ID3D12GraphicsCommandList> comList)
+	void CreateSetCameraCommand(const UINT num)
 	{
-		m_cb10_Camera.CreateCommandSetCBV(comList, num);
+		m_cb10_Camera.CreateCommandSetCBV(num);
 	}
 
 	//====================

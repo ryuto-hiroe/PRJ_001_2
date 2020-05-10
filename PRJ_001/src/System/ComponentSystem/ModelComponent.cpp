@@ -8,12 +8,12 @@ void ModelComponent::Draw()
 	if (m_enable == false)return;
 	if (m_model == nullptr)return;
 
-	std::function<void(RgCommandList&)> 
-		drawCall = [this](RgCommandList& comList)
+	std::function<void()> 
+		drawCall = [this]()
 	{
 		SHMGR.m_ModelSh.SetWorld(m_pOwner.lock()->GetMatrix());
 		// •`‰æ
-		SHMGR.m_ModelSh.DrawModel(*m_model, comList.GetCommandList());
+		SHMGR.m_ModelSh.DrawModel(*m_model);
 	};
 	// •`‰æŠÖ”‚ğ“o˜^
 	GPL.SetModelDrawCall(drawCall);
